@@ -8,7 +8,6 @@ rm -r ~/rpmbuild
 
 poetry install
 poetry build
-poetry run nvautoinstall --version
 
 mkdir -p ~/rpmbuild/SOURCES/
 cp dist/*.tar.gz ~/rpmbuild/SOURCES/
