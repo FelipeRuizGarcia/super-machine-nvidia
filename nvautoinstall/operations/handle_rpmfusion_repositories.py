@@ -35,19 +35,20 @@ class HandleRPMFusionRepositories:
         return retndata == 0
 
     def main(self):
-        os.system("dnf install -y fedora-workstation-repositories")
+        # os.system("dnf install -y fedora-workstation-repositories")
+        os.system("echo felipe test")
         os.system(
-            "dnf install -y            "
-            " https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-            $(rpm -E"
-            " %fedora).noarch.rpm"
+            "dnf4 install -y            "
+            " https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"
+            "40.noarch.rpm"
         )
         os.system(
-            "dnf install -y            "
+            "dnf4 install -y            "
             " https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-           "
-            " $(rpm -E %fedora).noarch.rpm"
+            " 40.noarch.rpm"
         )
         retndata = subprocess.getstatusoutput(
-            "dnf config-manager             --set-enable rpmfusion-free            "
+            "dnf4 config-manager             --set-enable rpmfusion-free            "
             " rpmfusion-free-updates rpmfusion-nonfree rpmfusion-nonfree-updates"
         )[0]
         return retndata == 0

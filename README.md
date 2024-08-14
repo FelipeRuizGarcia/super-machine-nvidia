@@ -1,3 +1,9 @@
+# Super Machine Nvidia
+
+a cli to wrriten in c++ to manage nvidia installations, extending and forked from gridhead/nvidia-auto-installer-for-fedora-linux
+
+---
+
 <h1 align="center">NVIDIA Auto Installer for Fedora Linux</h1>
 <p align="center">A CLI tool which lets you install proprietary NVIDIA drivers and much more easily on Fedora Linux (32 or above and Rawhide)</p>
 
@@ -13,11 +19,13 @@
 </p>
 
 ### Requirements
-* Active internet connection
-* Fedora Linux (32 or above and Rawhide)
-* Device with a discrete NVIDIA GPU
+
+-   Active internet connection
+-   Fedora Linux (32 or above and Rawhide)
+-   Device with a discrete NVIDIA GPU
 
 ### Installation
+
 If you use Fedora Linux (32 or above and Rawhide) - you can install NVIDIA Auto Installer for Fedora by enabling my
 COPR repository. Simply execute the following commands in succession to install the tool.
 
@@ -27,7 +35,90 @@ COPR repository. Simply execute the following commands in succession to install 
 # dnf install nvautoinstall -y
 ```
 
+### Development and Testing
+
+#### Fedora 41 `Rawhide` Consdirations
+
+##### Dnf4 is not default in Fedora 41
+
+`dnf5` is being the defaul package manager,
+So we explicity need to use `dnf4`
+
+#### Setup Development Environment
+
+```shell
+$ gh repo clone gridhead/nvidia-auto-installer-for-fedora-linux
+$ cd nvidia-auto-installer-for-fedora-linux
+```
+
+You can
+Also
+
+```
+poetry install
+poetry build
+poetry run nvautoinstall --version
+```
+
+Or you can build the rpm and install it locally
+
+```shell
+$ gh repo clone gridhead/nvidia-auto-installer-for-fedora-linux
+$ cd nvidia-auto-installer-for-fedora-linux
+# You can use poetry to update all the python dependencies before
+# $ poetry update
+# you can do your custom changes before to build
+#
+$ ./build_rpm.sh
+$ cd
+ ~  cd rpmbuild
+ ~/rpmbuild  ls
+BUILD  RPMS  SOURCES  SRPMS
+ ~/rpmbuild  tree
+.
+├── BUILD
+├── RPMS
+│   └── noarch
+│       └── nvautoinstall-0.4.2-1.fc41.noarch.rpm
+├── SOURCES
+│   └── nvautoinstall-0.4.2.tar.gz
+└── SRPMS
+    └── nvautoinstall-0.4.2-1.fc41.src.rpm
+
+6 directories, 3 files
+ ~/rpmbuild  builtin cd -- /home/adapa/rpmbuild/RPMS/noarch
+ ~/rp/R/noarch  sudo dnf5 install ./nvautoinstall-0.4.2-1.fc41.noarch.rpm
+[sudo] password for adapa:
+Updating and loading repositories:
+Repositories loaded.
+Package                    Arch    Version                    Repository            Size
+Installing:
+ nvautoinstall             noarch  0.4.2-1.fc41               @commandline     234.2 KiB
+
+Transaction Summary:
+ Installing:        1 packages
+
+Total size of inbound packages is 53 KiB. Need to download 0 B.
+After this operation 234 KiB will be used (install 234 KiB, remove 0 B).
+Is this ok [y/N]: y
+
+Running transaction
+[1/3] Verify package files                      100% | 333.0   B/s |   1.0   B |  00m00s
+[2/3] Prepare transaction                       100% |   5.0   B/s |   1.0   B |  00m00s
+[3/3] Installing nvautoinstall-0:0.4.2-1.fc41.n 100% |   6.5 MiB/s | 253.8 KiB | -00m00s
+>>> Running trigger-install scriptlet: glibc-common-0:2.39.9000-30.fc41.x86_64warning: po
+ull() are deprecated, use rpm.execute() instead
+warning: posix.wait(): .fork(), .exec(), .wait() and .redirect2null() are deprecated, use
+warning: posix.exec(): .fork(), .exec(), .wait() and .redirect2null() are deprecated, us[
+ 719.0 KiB/s | 253.8 KiB |  00m00s
+>>> Running trigger-install scriptlet: glibc-common-0:2.39.9000-30.fc41.x86_64
+>>> Stop trigger-install scriptlet: glibc-common-0:2.39.9000-30.fc41.x86_64
+Warning: skipped PGP checks for 1 package from repository: @commandline
+Complete!
+```
+
 ### Usage
+
 1. Make sure you have a working internet connection
 2. Install the tool from COPR with the above instructions
 3. Execute `nvautoinstall` to check installation modes
@@ -35,61 +126,66 @@ COPR repository. Simply execute the following commands in succession to install 
 5. Give stars to the repository if you found this helpful
 
 ### Modes of installation
+
 Active internet connection and superuser privilege is required to execute the following installation modes.
-- **`sudo nvautoinstall rpmadd`**
-  This mode enables the RPM Fusion NVIDIA drivers repository.
-- **`sudo nvautoinstall driver`**
-  This mode simply installs the NVIDIA drivers. Enabling the RPM Fusion NVIDIA drivers repository is mandatory before
-  doing this.
-- **`sudo nvautoinstall nvrepo`**
-  This mode enables the official NVIDIA repository for CUDA software.
-- **`sudo nvautoinstall plcuda`**
-  This mode installs only the CUDA support softwares. Enabling the RPM Fusion NVIDIA drivers and NVIDIA official
-  repository, and installing the basic drivers are mandatory before doing this.
-- **`sudo nvautoinstall ffmpeg`**
-  This mode installs only the FFMPEG acceleration. Enabling the RPM Fusion NVIDIA drivers repository and installing the
-  basic drivers are mandatory before doing this.
-- **`sudo nvautoinstall vulkan`**
-  This mode installs only the Vulkan renderer. Enabling the RPM Fusion NVIDIA drivers repository and installing the
-  basic drivers are mandatory before doing this.
-- **`sudo nvautoinstall vidacc`**
-  This mode installs only the VDPAU/VAAPI acceleration. Enabling the RPM Fusion NVIDIA drivers repository and
-  installing the basic drivers are mandatory before doing this.
-- **`sudo nvautoinstall getall`**
-  This mode installs all the above packages. (Not been implemented yet)
-- **`sudo nvautoinstall cheksu`**
-  This mode allows you to check the current user privilege level. You can use this tool effectively only when you have
-  logged in as a root or sudo user.
-- **`sudo nvautoinstall compat`**
-  This mode allows you to check your hardware and host compatibility. The tool would check your hardware and host and
-  tell if your device is supported by the tool or not.
-- **`sudo nvautoinstall primec`**
-  This mode allows you to toggle the PRIME offloading to render all display elements using the discrete card. This has
-  only been tested on Workstation variant of Fedora Linux.
-- **`sudo nvautoinstall --version`**
-  This mode shows the tool version and exits out.
-- **`sudo nvautoinstall --help`**
-  This mode shows the help message and exits out.
+
+-   **`sudo nvautoinstall rpmadd`**
+    This mode enables the RPM Fusion NVIDIA drivers repository.
+-   **`sudo nvautoinstall driver`**
+    This mode simply installs the NVIDIA drivers. Enabling the RPM Fusion NVIDIA drivers repository is mandatory before
+    doing this.
+-   **`sudo nvautoinstall nvrepo`**
+    This mode enables the official NVIDIA repository for CUDA software.
+-   **`sudo nvautoinstall plcuda`**
+    This mode installs only the CUDA support softwares. Enabling the RPM Fusion NVIDIA drivers and NVIDIA official
+    repository, and installing the basic drivers are mandatory before doing this.
+-   **`sudo nvautoinstall ffmpeg`**
+    This mode installs only the FFMPEG acceleration. Enabling the RPM Fusion NVIDIA drivers repository and installing the
+    basic drivers are mandatory before doing this.
+-   **`sudo nvautoinstall vulkan`**
+    This mode installs only the Vulkan renderer. Enabling the RPM Fusion NVIDIA drivers repository and installing the
+    basic drivers are mandatory before doing this.
+-   **`sudo nvautoinstall vidacc`**
+    This mode installs only the VDPAU/VAAPI acceleration. Enabling the RPM Fusion NVIDIA drivers repository and
+    installing the basic drivers are mandatory before doing this.
+-   **`sudo nvautoinstall getall`**
+    This mode installs all the above packages. (Not been implemented yet)
+-   **`sudo nvautoinstall cheksu`**
+    This mode allows you to check the current user privilege level. You can use this tool effectively only when you have
+    logged in as a root or sudo user.
+-   **`sudo nvautoinstall compat`**
+    This mode allows you to check your hardware and host compatibility. The tool would check your hardware and host and
+    tell if your device is supported by the tool or not.
+-   **`sudo nvautoinstall primec`**
+    This mode allows you to toggle the PRIME offloading to render all display elements using the discrete card. This has
+    only been tested on Workstation variant of Fedora Linux.
+-   **`sudo nvautoinstall --version`**
+    This mode shows the tool version and exits out.
+-   **`sudo nvautoinstall --help`**
+    This mode shows the help message and exits out.
 
 ### Note
-* Active internet connection is required to download drivers.
-* Requires secure boot to be turned off in UEFI systems.
-* Requires superuser access for repo addition and driver setup.
-* The drivers are fetched from the RPM Fusion repository.
-* Use discretion while using this on other spins.
-* Only tested on 9XX/10XX/20XX/30XX series discrete NVIDIA cards.
-* Use discretion while installing with older discrete NVIDIA cards.
-* No additional configuration is required for Optimus setups.
-* Native support for PRIME configuration on Optimus.
+
+-   Active internet connection is required to download drivers.
+-   Requires secure boot to be turned off in UEFI systems.
+-   Requires superuser access for repo addition and driver setup.
+-   The drivers are fetched from the RPM Fusion repository.
+-   Use discretion while using this on other spins.
+-   Only tested on 9XX/10XX/20XX/30XX series discrete NVIDIA cards.
+-   Use discretion while installing with older discrete NVIDIA cards.
+-   No additional configuration is required for Optimus setups.
+-   Native support for PRIME configuration on Optimus.
 
 ### Coming soon
-* CLI "Launch using Dedicated Graphics Card" option.
-* Intuitive mode switching for hybrid graphics.
-* Distinct mode for using integrated or discrete GPU.
-* Experimental support for RHEL 8 and CentOS 8.
-* Support for older cards by active querying at NVIDIA.
+
+-   CLI "Launch using Dedicated Graphics Card" option.
+-   Intuitive mode switching for hybrid graphics.
+-   Distinct mode for using integrated or discrete GPU.
+-   Experimental support for RHEL 8 and CentOS 8.
+-   Support for older cards by active querying at NVIDIA.
 
 ### Disclaimer
+
 This tool has been tried and tested multiple times and is expected to work flawlessly in Fedora Linux (32 or above,
 and Rawhide). It has not been tested on any of the spins yet so you are requested to proceed with caution. While the
 chances of things going wrong is pretty slim, you would still want to make backups, should things do not go as expected.
@@ -332,7 +428,6 @@ $ sudo nvautoinstall primec
 [ ✓ ] PRIME Support was successfully enabled
 [ ✗ ] Leaving installer
 ```
-
 
 #### Enabling the RPM Fusion NVIDIA drivers repositories
 
